@@ -243,7 +243,7 @@
           <rect>
            <x>190</x>
            <y>60</y>
-           <width>271</width>
+           <width>272</width>
            <height>51</height>
           </rect>
          </property>
@@ -253,65 +253,58 @@
           </font>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_1">
           <attribute name="title">
            <string>像素坐标(px)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>12</x>
              <y>0</y>
-             <width>112</width>
+             <width>234</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLabel" name="px_v1">
-              <property name="text">
-               <string>V:</string>
+             <widget class="QDoubleSpinBox" name="left_up_px_u">
+              <property name="prefix">
+               <string>U:</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="left_up_px_v">
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
               <property name="maximum">
-               <double>480.000000000000000</double>
+               <double>640.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLabel" name="px_u1">
-              <property name="text">
-               <string>U:</string>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="left_up_px_u">
-              <property name="minimum">
-               <double>0.000000000000000</double>
+             <widget class="QDoubleSpinBox" name="left_up_px_v">
+              <property name="prefix">
+               <string>V:</string>
               </property>
               <property name="maximum">
-               <double>640.000000000000000</double>
+               <double>480.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -325,25 +318,21 @@
           <attribute name="title">
            <string>实际坐标(cm)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_2">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>11</x>
              <y>0</y>
-             <width>111</width>
+             <width>243</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QLabel" name="cm_x1">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QDoubleSpinBox" name="left_up_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
               <property name="minimum">
                <double>-500.000000000000000</double>
               </property>
@@ -352,27 +341,24 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_3">
-           <property name="geometry">
-            <rect>
-             <x>140</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QLabel" name="cm_y1">
-              <property name="text">
-               <string>Y:</string>
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="left_up_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
               <property name="maximum">
                <double>500.000000000000000</double>
               </property>
@@ -386,7 +372,7 @@
          <property name="geometry">
           <rect>
            <x>300</x>
-           <y>320</y>
+           <y>330</y>
            <width>271</width>
            <height>51</height>
           </rect>
@@ -403,56 +389,49 @@
           <attribute name="title">
            <string>像素坐标(px)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_8">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>11</x>
              <y>0</y>
-             <width>112</width>
+             <width>234</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QLabel" name="px_v3">
-              <property name="text">
-               <string>V:</string>
+             <widget class="QDoubleSpinBox" name="right_down_px_u">
+              <property name="prefix">
+               <string>U:</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="right_down_px_v">
               <property name="maximum">
-               <double>480.000000000000000</double>
+               <double>640.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_9">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <widget class="QLabel" name="px_u3">
-              <property name="text">
-               <string>U:</string>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="right_down_px_u">
+             <widget class="QDoubleSpinBox" name="right_down_px_v">
+              <property name="prefix">
+               <string>V;</string>
+              </property>
               <property name="maximum">
-               <double>640.000000000000000</double>
+               <double>480.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -466,25 +445,24 @@
           <attribute name="title">
            <string>实际坐标(cm)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_10">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>12</x>
              <y>0</y>
-             <width>111</width>
+             <width>243</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
-            <item>
-             <widget class="QLabel" name="cm_x3">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
              <widget class="QDoubleSpinBox" name="right_down_cm_x">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="prefix">
+               <string>X:</string>
+              </property>
               <property name="minimum">
                <double>-500.000000000000000</double>
               </property>
@@ -493,27 +471,24 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_11">
-           <property name="geometry">
-            <rect>
-             <x>140</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_12">
             <item>
-             <widget class="QLabel" name="cm_y3">
-              <property name="text">
-               <string>Y:</string>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="right_down_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
               <property name="maximum">
                <double>500.000000000000000</double>
               </property>
@@ -527,7 +502,7 @@
          <property name="geometry">
           <rect>
            <x>330</x>
-           <y>180</y>
+           <y>190</y>
            <width>271</width>
            <height>51</height>
           </rect>
@@ -538,65 +513,58 @@
           </font>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_7">
           <attribute name="title">
            <string>像素坐标(px)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_12">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>11</x>
              <y>0</y>
-             <width>112</width>
+             <width>234</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QLabel" name="px_v4">
-              <property name="text">
-               <string>V:</string>
+             <widget class="QDoubleSpinBox" name="right_up_px_u">
+              <property name="prefix">
+               <string>U:</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="right_up_px_v">
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
               <property name="maximum">
-               <double>480.000000000000000</double>
+               <double>640.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_13">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
-             <widget class="QLabel" name="px_u4">
-              <property name="text">
-               <string>U:</string>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="right_up_px_u">
-              <property name="minimum">
-               <double>0.000000000000000</double>
+             <widget class="QDoubleSpinBox" name="right_up_px_v">
+              <property name="prefix">
+               <string>V:</string>
               </property>
               <property name="maximum">
-               <double>640.000000000000000</double>
+               <double>480.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -610,25 +578,27 @@
           <attribute name="title">
            <string>实际坐标(cm)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_14">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
              <x>10</x>
              <y>0</y>
-             <width>111</width>
+             <width>243</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_15">
-            <item>
-             <widget class="QLabel" name="cm_x4">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <widget class="QDoubleSpinBox" name="right_up_cm_x">
+              <property name="minimumSize">
+               <size>
+                <width>5</width>
+                <height>15</height>
+               </size>
+              </property>
+              <property name="prefix">
+               <string>X:</string>
+              </property>
               <property name="minimum">
                <double>-500.000000000000000</double>
               </property>
@@ -637,27 +607,24 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_15">
-           <property name="geometry">
-            <rect>
-             <x>140</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
             <item>
-             <widget class="QLabel" name="cm_y4">
-              <property name="text">
-               <string>Y:</string>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="right_up_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
               <property name="maximum">
                <double>500.000000000000000</double>
               </property>
@@ -672,7 +639,7 @@
           <rect>
            <x>10</x>
            <y>130</y>
-           <width>271</width>
+           <width>272</width>
            <height>51</height>
           </rect>
          </property>
@@ -682,62 +649,55 @@
           </font>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_3">
           <attribute name="title">
            <string>像素坐标(px)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_16">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>140</x>
+             <x>11</x>
              <y>0</y>
-             <width>112</width>
+             <width>234</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QLabel" name="px_v2">
-              <property name="text">
-               <string>V:</string>
+             <widget class="QDoubleSpinBox" name="left_down_px_u">
+              <property name="prefix">
+               <string>U:</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="left_down_px_v">
               <property name="maximum">
-               <double>480.000000000000000</double>
+               <double>640.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_17">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_18">
             <item>
-             <widget class="QLabel" name="px_u2">
-              <property name="text">
-               <string>U:</string>
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="left_down_px_u">
+             <widget class="QDoubleSpinBox" name="left_down_px_v">
+              <property name="prefix">
+               <string>V:</string>
+              </property>
               <property name="maximum">
-               <double>640.000000000000000</double>
+               <double>480.000000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -751,25 +711,21 @@
           <attribute name="title">
            <string>实际坐标(cm)</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget_18">
+          <widget class="QWidget" name="">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>11</x>
              <y>0</y>
-             <width>111</width>
+             <width>243</width>
              <height>25</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_19">
-            <item>
-             <widget class="QLabel" name="cm_x2">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
              <widget class="QDoubleSpinBox" name="left_down_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
               <property name="minimum">
                <double>-500.000000000000000</double>
               </property>
@@ -778,27 +734,24 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="layoutWidget_19">
-           <property name="geometry">
-            <rect>
-             <x>140</x>
-             <y>0</y>
-             <width>112</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_20">
             <item>
-             <widget class="QLabel" name="cm_y2">
-              <property name="text">
-               <string>Y:</string>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>48</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="left_down_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
               <property name="maximum">
                <double>500.000000000000000</double>
               </property>
@@ -811,7 +764,7 @@
         <widget class="QLabel" name="led1">
          <property name="geometry">
           <rect>
-           <x>340</x>
+           <x>360</x>
            <y>140</y>
            <width>16</width>
            <height>16</height>
@@ -843,7 +796,7 @@
         <widget class="QLabel" name="led3">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>350</x>
            <y>300</y>
            <width>16</width>
            <height>16</height>
@@ -859,8 +812,8 @@
         <widget class="QLabel" name="led4">
          <property name="geometry">
           <rect>
-           <x>520</x>
-           <y>230</y>
+           <x>530</x>
+           <y>240</y>
            <width>16</width>
            <height>16</height>
           </rect>
