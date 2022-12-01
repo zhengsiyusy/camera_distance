@@ -5,8 +5,10 @@ import sys
 import cv2
 import math
 import numpy as np
-from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QFileDialog, QApplication
 from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtGui import QGuiApplication
 from camera import Ui_camera
 
 
@@ -35,7 +37,6 @@ class QmyMainWindow(QMainWindow):
         self.ui.statusbar.addWidget(self.__LabImagePOS)
 
     '''初始化所有槽函数'''
-
     def slot_init(self):
         self.timer_camera.timeout.connect(self.show_camera)  # 若定时器结束，则调用show_camera()
         self.ui.open_cam.clicked.connect(self.open_camera)
@@ -48,9 +49,14 @@ class QmyMainWindow(QMainWindow):
 
     def mouseMoveEvent(self, event):  # 鼠标移动事件
         self.ui.frame2.setMouseTracking(True)
-        # 窗口坐标 - Qlabel左上点起始坐标
-        self.U = event.x() - 660  # 返回鼠标相对于窗口的x轴坐标
-        self.V = event.y() - 268  # 返回鼠标相对于窗口的y轴坐标
+        newPos = event.pos()
+        # 返回鼠标相对于窗口的x轴坐标
+        snapPosX = newPos.x()
+        # 返回鼠标相对于窗口的y轴坐标
+        snapPosY = newPos.y()
+        snapPos = QtCore.QPointF(snapPosX, snapPosY)
+        self.U = snapPos.x() - 658
+        self.V = snapPos.y() - 271
         self.__LabImagePOS.setText("像素坐标：U:%.3f, V:%.3f " % (self.U, self.V - 20))
 
     def mode_select(self):
@@ -251,12 +257,12 @@ class QmyMainWindow(QMainWindow):
             show = cv2.resize(self.image, (640, 480))
             # 视频色彩转换回RGB，这样才是现实的颜色
             show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
-            # 把读取到的视频数据变成QImage形式
             showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
             self.ui.frame2.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
 
 
 if __name__ == '__main__':
+    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow
     ui.show()  # 调用ui的show()以显示。同样show()是源于父类QtWidgets.QWidget的
