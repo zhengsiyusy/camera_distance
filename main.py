@@ -6,10 +6,13 @@ import sys
 import cv2
 import math
 import glob
-from datetime import datetime
 import numpy as np
+from datetime import datetime
+import threading
+from threading import Thread
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QFileDialog, QApplication
 from PyQt5.QtMultimedia import QCameraInfo
 from loginfo.log import init_log
@@ -36,6 +39,8 @@ class QmyMainWindow(QMainWindow):
         self.log = init_log()
         self.camera = None  # QCamera对象
         self.get_camera_info()
+        # self.matrix = None
+        self.index = 0
 
     def get_camera_info(self):
         cameras = QCameraInfo.availableCameras()
@@ -74,12 +79,49 @@ class QmyMainWindow(QMainWindow):
             self.ui.open_cam.setText("打开相机")
 
     def save_parameter(self):
-        if not self.timer_camera.isActive():  # 若定时器未启动
-            msg = QtWidgets.QMessageBox.warning(self, '警告', "请先打开相机", buttons=QtWidgets.QMessageBox.Ok)
-        else:
-            self.timer_camera.stop()  # 关闭定时器
-            self.cap.release()  # 释放视频流
-            self.ui.frame1.clear()  # 清空视频显示区域
+        # if not self.matrix:
+        #     QtWidgets.QMessageBox.warning(self, '警告', "输入为空，请输入数据计算", buttons=QtWidgets.QMessageBox.Ok)
+        # else:
+            now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
+            filename = './' + str(now_time) + ".cfg"
+            # 前面是地址，后面是文件类型,得到输入地址的文件名和地址
+            filepath, type = QFileDialog.getSaveFileName(self, "文件保存", filename, 'cfg(*.cfg)')
+            print(filepath)
+            with open(filepath, 'w') as f_cfg:
+                # 发送坐标信息方式
+                f_cfg.write(str(self.px_u1_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_v1_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_u2_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_v2_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_u3_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_v3_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_u4_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.px_v4_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_x1_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_y1_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_x2_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_y2_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_x3_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_y3_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_x4_value))
+                f_cfg.write('\n')
+                f_cfg.write(str(self.cm_y4_value))
+                f_cfg.write('\n')
+                f_cfg.close()
 
     def get_image(self):
         if not self.timer_camera.isActive():  # 若定时器未启动
@@ -108,11 +150,10 @@ class QmyMainWindow(QMainWindow):
             self.ui.frame2.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
 
     '''初始化所有槽函数'''
-
     def slot_init(self):
         self.timer_camera.timeout.connect(self.show_camera)  # 若定时器结束，则调用show_camera()
         self.ui.open_cam.clicked.connect(self.open_camera)
-        # self.ui.save_para.clicked.connect(self.save_parameter)
+        self.ui.save_para.clicked.connect(self.save_parameter)
         self.ui.get_image.clicked.connect(self.get_image)
         self.ui.calculate_camera.clicked.connect(self.calculate_camera_result)
         self.ui.calculate_position.clicked.connect(self.calculate_position_result)
@@ -127,9 +168,45 @@ class QmyMainWindow(QMainWindow):
         # 返回鼠标相对于窗口的y轴坐标
         snapPosY = newPos.y()
         snapPos = QtCore.QPointF(snapPosX, snapPosY)
-        self.U = snapPos.x() - 658
-        self.V = snapPos.y() - 271
-        self.LabImagePOS.setText("像素坐标：U:%.3f, V:%.3f " % (self.U, self.V - 20))
+        self.U = snapPos.x() - 636
+        self.V = snapPos.y() - 289
+        self.LabImagePOS.setText("像素坐标：U:%.3f, V:%.3f " % (self.U, self.V))
+
+    def mousePressEvent(self, event):
+        self.ui.frame2.setMouseTracking(True)
+        if event.button() == Qt.LeftButton:  # 如果鼠标左键点击
+            if self.index == 0:
+                self.ui.left_up_px_u.setValue(event.pos().x() - 636)
+                self.ui.left_up_px_v.setValue(event.pos().y() - 289)
+                self.ui.led1.setStyleSheet("color:green")
+                self.ui.led2.setStyleSheet("color:black")
+                self.ui.led3.setStyleSheet("color:black")
+                self.ui.led4.setStyleSheet("color:black")
+                self.index += 1
+            elif self.index == 1:
+                self.ui.left_down_px_u.setValue(event.pos().x() - 636)
+                self.ui.left_down_px_v.setValue(event.pos().y() - 289)
+                self.ui.led1.setStyleSheet("color:black")
+                self.ui.led2.setStyleSheet("color:green")
+                self.ui.led3.setStyleSheet("color:black")
+                self.ui.led4.setStyleSheet("color:black")
+                self.index += 1
+            elif self.index == 2:
+                self.ui.right_down_px_u.setValue(event.pos().x() - 636)
+                self.ui.right_down_px_v.setValue(event.pos().y() - 289)
+                self.ui.led1.setStyleSheet("color:black")
+                self.ui.led2.setStyleSheet("color:black")
+                self.ui.led3.setStyleSheet("color:green")
+                self.ui.led4.setStyleSheet("color:black")
+                self.index += 1
+            elif self.index == 3:
+                self.ui.right_up_px_u.setValue(event.pos().x() - 636)
+                self.ui.right_up_px_v.setValue(event.pos().y() - 289)
+                self.ui.led1.setStyleSheet("color:black")
+                self.ui.led2.setStyleSheet("color:black")
+                self.ui.led3.setStyleSheet("color:black")
+                self.ui.led4.setStyleSheet("color:green")
+                self.index = 0
 
     def mode_select(self):
         if self.ui.calculate_distance.isChecked():
@@ -209,99 +286,62 @@ class QmyMainWindow(QMainWindow):
         # position config
         # 左上角坐标
         px_u1_value = self.ui.left_up_px_u.value()
-        px_u1_value = round(px_u1_value, 2)
+        self.px_u1_value = round(px_u1_value, 2)
         px_v1_value = self.ui.left_up_px_v.value()
-        px_v1_value = round(px_v1_value, 2)
+        self.px_v1_value = round(px_v1_value, 2)
         cm_x1_value = self.ui.left_up_cm_x.value()
-        cm_x1_value = round(cm_x1_value, 2)
+        self.cm_x1_value = round(cm_x1_value, 2)
         cm_y1_value = self.ui.left_up_cm_y.value()
-        cm_y1_value = round(cm_y1_value, 2)
+        self.cm_y1_value = round(cm_y1_value, 2)
         # 左下角坐标
         px_u2_value = self.ui.left_down_px_u.value()
-        px_u2_value = round(px_u2_value, 2)
+        self.px_u2_value = round(px_u2_value, 2)
         px_v2_value = self.ui.left_down_px_v.value()
-        px_v2_value = round(px_v2_value, 2)
+        self.px_v2_value = round(px_v2_value, 2)
         cm_x2_value = self.ui.left_down_cm_x.value()
-        cm_x2_value = round(cm_x2_value, 2)
+        self.cm_x2_value = round(cm_x2_value, 2)
         cm_y2_value = self.ui.left_down_cm_y.value()
-        cm_y2_value = round(cm_y2_value, 2)
+        self.cm_y2_value = round(cm_y2_value, 2)
         # 右下角坐标
         px_u3_value = self.ui.right_down_px_u.value()
-        px_u3_value = round(px_u3_value, 2)
+        self.px_u3_value = round(px_u3_value, 2)
         px_v3_value = self.ui.right_down_px_v.value()
-        px_v3_value = round(px_v3_value, 2)
+        self.px_v3_value = round(px_v3_value, 2)
         cm_x3_value = self.ui.right_down_cm_x.value()
-        cm_x3_value = round(cm_x3_value, 2)
+        self.cm_x3_value = round(cm_x3_value, 2)
         cm_y3_value = self.ui.right_down_cm_y.value()
-        cm_y3_value = round(cm_y3_value, 2)
+        self.cm_y3_value = round(cm_y3_value, 2)
         # 右上角坐标
         px_u4_value = self.ui.right_up_px_u.value()
-        px_u4_value = round(px_u4_value, 2)
+        self.px_u4_value = round(px_u4_value, 2)
         px_v4_value = self.ui.right_up_px_v.value()
-        px_v4_value = round(px_v4_value, 2)
+        self.px_v4_value = round(px_v4_value, 2)
         cm_x4_value = self.ui.right_up_cm_x.value()
-        cm_x4_value = round(cm_x4_value, 2)
+        self.cm_x4_value = round(cm_x4_value, 2)
         cm_y4_value = self.ui.right_up_cm_y.value()
-        cm_y4_value = round(cm_y4_value, 2)
+        self.cm_y4_value = round(cm_y4_value, 2)
 
-        pts_src = np.array([[px_u1_value, px_v1_value, 1.0],
-                            [px_u2_value, px_v2_value, 1.0],
-                            [px_u3_value, px_v3_value, 1.0],
-                            [px_u4_value, px_v4_value, 1.0]])
-        pts_dst = np.array([[cm_x1_value, cm_y1_value, 1.0],
-                            [cm_x2_value, cm_y2_value, 1.0],
-                            [cm_x3_value, cm_y3_value, 1.0],
-                            [cm_x4_value, cm_y4_value, 1.0]])
-        if ((px_u1_value == 0 and px_v1_value == 0 and cm_x1_value == 0 and cm_y1_value == 0) or
-                (px_u2_value == 0 and px_v2_value == 0 and cm_x2_value == 0 and cm_y2_value == 0) or
-                (px_u3_value == 0 and px_v3_value == 0 and cm_x3_value == 0 and cm_y3_value == 0) or
-                (px_u4_value == 0 and px_v4_value == 0 and cm_x1_value == 0 and cm_y4_value == 0)):
+        pts_src = np.array([[self.px_u1_value, self.px_v1_value, 1.0],
+                            [self.px_u2_value, self.px_v2_value, 1.0],
+                            [self.px_u3_value, self.px_v3_value, 1.0],
+                            [self.px_u4_value, self.px_v4_value, 1.0]])
+        pts_dst = np.array([[self.cm_x1_value, self.cm_y1_value, 1.0],
+                            [self.cm_x2_value, self.cm_y2_value, 1.0],
+                            [self.cm_x3_value, self.cm_y3_value, 1.0],
+                            [self.cm_x4_value, self.cm_y4_value, 1.0]])
+        if ((self.px_u1_value == 0 and self.px_v1_value == 0 and self.cm_x1_value == 0 and self.cm_y1_value == 0) or
+                (self.px_u2_value == 0 and self.px_v2_value == 0 and self.cm_x2_value == 0 and self.cm_y2_value == 0) or
+                (self.px_u3_value == 0 and self.px_v3_value == 0 and self.cm_x3_value == 0 and self.cm_y3_value == 0) or
+                (self.px_u4_value == 0 and self.px_v4_value == 0 and self.cm_x1_value == 0 and self.cm_y4_value == 0)):
             msg = QtWidgets.QMessageBox.warning(self, '警告', "输入坐标参数有误，请重新输入", buttons=QtWidgets.QMessageBox.Ok)
-        matrix, status = cv2.findHomography(pts_src, pts_dst, method=cv2.RANSAC, ransacReprojThreshold=1)
-        print("转换矩阵", matrix)
-        if matrix is not None:
+        self.matrix, status = cv2.findHomography(pts_src, pts_dst, method=cv2.RANSAC, ransacReprojThreshold=1)
+        print("转换矩阵", self.matrix)
+        if self.matrix is not None:
             msg = QtWidgets.QMessageBox.information(self, '校准', "校准成功", buttons=QtWidgets.QMessageBox.Ok)
             self.log.info("Coordinate of pixels:\n %s" % pts_src)
             self.log.info("Actual coordinates:\n %s" % pts_dst)
-            self.log.info("Matrix of transformation:\n %s" % matrix)
+            self.log.info("Matrix of transformation:\n %s" % self.matrix)
             self.log.info("position: Parameter calibration succeeded!")
-
-            now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
-            filename = './' + str(now_time) + ".cfg"
-            with open(filename, 'w') as f_cfg:
-                # 发送坐标信息方式
-                f_cfg.write(str(px_u1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_v1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_u2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_v2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_u3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_v3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_u4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(px_v4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_x1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_y1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_x2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_y2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_x3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_y3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_x4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(cm_y4_value))
-                f_cfg.write('\n')
         else:
             self.log.error("position: Failure of calibration")
 
