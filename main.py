@@ -5,13 +5,15 @@ import os
 import sys
 import cv2
 import math
+import glob
+from datetime import datetime
 import numpy as np
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QFileDialog, QApplication
-from PyQt5 import QtCore, QtWidgets, QtGui
-from camera import Ui_camera
-from loginfo.log import init_log
 from PyQt5.QtMultimedia import QCameraInfo
+from loginfo.log import init_log
+from source.camera import Ui_camera
 
 
 class QmyMainWindow(QMainWindow):
@@ -31,15 +33,12 @@ class QmyMainWindow(QMainWindow):
         self.LabImagePOS = QLabel(name)
         self.ui.statusbar.addWidget(self.LabImagePOS)
         # 日志管理
-        current_path = os.getcwd()
-        path = os.path.join(current_path, 'camera.log')
-        self.log = init_log(path)
+        self.log = init_log()
         self.camera = None  # QCamera对象
         self.get_camera_info()
 
     def get_camera_info(self):
-        cameras = QCameraInfo.availableCameras()  # list[QCameraInfo]
-        print(str(len(cameras)) + " camera find!")
+        cameras = QCameraInfo.availableCameras()
         if len(cameras) > 0:
             camInfo = QCameraInfo.defaultCamera()
             info = camInfo.description()
@@ -109,6 +108,7 @@ class QmyMainWindow(QMainWindow):
             self.ui.frame2.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
 
     '''初始化所有槽函数'''
+
     def slot_init(self):
         self.timer_camera.timeout.connect(self.show_camera)  # 若定时器结束，则调用show_camera()
         self.ui.open_cam.clicked.connect(self.open_camera)
@@ -265,13 +265,10 @@ class QmyMainWindow(QMainWindow):
             self.log.info("Actual coordinates:\n %s" % pts_dst)
             self.log.info("Matrix of transformation:\n %s" % matrix)
             self.log.info("position: Parameter calibration succeeded!")
-            with open('matrix_config.cfg', 'w') as f_cfg:
-                # 发送转换矩阵方式
-                # for i in range(3):
-                #     for j in range(3):
-                #         f_cfg.write(str(matrix[i][j]))
-                #         f_cfg.write('\n')
 
+            now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
+            filename = './' + str(now_time) + ".cfg"
+            with open(filename, 'w') as f_cfg:
                 # 发送坐标信息方式
                 f_cfg.write(str(px_u1_value))
                 f_cfg.write('\n')
@@ -310,6 +307,8 @@ class QmyMainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+    glob.glob(os.path.join("./", "*.cfg"))
+    glob.glob(os.path.join("./", "*.log"))
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow
