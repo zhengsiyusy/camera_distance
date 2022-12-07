@@ -8,15 +8,93 @@ import math
 import glob
 import numpy as np
 from datetime import datetime
-import threading
-from threading import Thread
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QFileDialog, QApplication
 from PyQt5.QtMultimedia import QCameraInfo
 from loginfo.log import init_log
 from source.camera import Ui_camera
+
+final_x = 0
+final_y = 0
+
+
+def crop_image(point_x, point_y):
+    # 边缘点图像裁剪处理最终裁剪为64*48
+    # 左上角点
+    if point_x - 32 < 0 and point_y - 24 < 0:
+        new_x = 0
+        new_y = 0
+        roi_w = 64
+        roi_h = 48
+    # 右上角点
+    elif point_x + 32 > 640 and point_y - 24 < 0:
+        new_x = 640 - 64
+        new_y = 0
+        roi_w = 640
+        roi_h = 48
+    # 左下角点
+    elif point_x - 32 < 0 and point_y + 24 > 480:
+        new_x = 0
+        new_y = 480 - 48
+        roi_w = 64
+        roi_h = 480
+    # 右下角点
+    elif point_x + 32 > 640 and point_y + 24 > 480:
+        new_x = 640 - 64
+        new_y = 480 - 48
+        roi_w = 640
+        roi_h = 480
+    # 上侧
+    elif (point_x - 32 > 0 or point_x + 32 < 640) and point_y - 24 < 0:
+        new_x = point_x - 32
+        new_y = 0
+        roi_w = point_x + 32
+        roi_h = 48
+    # 左侧
+    elif point_x - 32 < 0 and (point_y - 24 < 0 or point_y + 24 > 480):
+        new_x = 0
+        new_y = point_y - 24
+        roi_w = 64
+        roi_h = point_y + 24
+    # 下侧
+    elif (point_x - 32 > 0 or point_x + 32 < 640) and point_y + 24 > 480:
+        new_x = point_x - 32
+        new_y = 480 - 48
+        roi_w = point_x + 32
+        roi_h = 480
+    # 右侧
+    elif point_x + 32 > 640 and (point_y - 24 < 0 or point_y + 24 > 480):
+        new_x = 640 - 64
+        new_y = point_y - 24
+        roi_w = 640
+        roi_h = point_y + 24
+    # 其他中心区域
+    else:
+        new_x = point_x - 32
+        new_y = point_y - 24
+        roi_w = point_x + 32
+        roi_h = point_y + 24
+    return new_x, new_y, roi_w, roi_h
+
+
+# # 装饰器实现类似于静态变量的功能
+# def static_vars(**kwargs):
+#     def decorate(func):
+#         for k in kwargs:
+#             setattr(func, k, kwargs[k])
+#         return func
+#
+#     return decorate
+#
+#
+# @static_vars(first_time=0)
+# def foo():
+#     foo.first_time = 0
+#
+#
+# class Foo(object):
+#     first_time = 0
 
 
 class QmyMainWindow(QMainWindow):
@@ -39,7 +117,7 @@ class QmyMainWindow(QMainWindow):
         self.log = init_log()
         self.camera = None  # QCamera对象
         self.get_camera_info()
-        # self.matrix = None
+        self.roi = None
         self.index = 0
 
     def get_camera_info(self):
@@ -77,51 +155,75 @@ class QmyMainWindow(QMainWindow):
             self.cap.release()  # 释放视频流
             self.ui.frame1.clear()  # 清空视频显示区域
             self.ui.open_cam.setText("打开相机")
+            self.ui.left_up_px_u.setValue(0)
+            self.ui.left_up_px_v.setValue(0)
+            self.ui.led1.setStyleSheet("color:black")
+            self.ui.led2.setStyleSheet("color:black")
+            self.ui.led3.setStyleSheet("color:black")
+            self.ui.led4.setStyleSheet("color:black")
+            self.ui.left_down_px_u.setValue(0)
+            self.ui.left_down_px_v.setValue(0)
+            self.ui.led1.setStyleSheet("color:black")
+            self.ui.led2.setStyleSheet("color:black")
+            self.ui.led3.setStyleSheet("color:black")
+            self.ui.led4.setStyleSheet("color:black")
+            self.ui.right_down_px_u.setValue(0)
+            self.ui.right_down_px_v.setValue(0)
+            self.ui.led1.setStyleSheet("color:black")
+            self.ui.led2.setStyleSheet("color:black")
+            self.ui.led3.setStyleSheet("color:black")
+            self.ui.led4.setStyleSheet("color:black")
+            self.ui.right_up_px_u.setValue(0)
+            self.ui.right_up_px_v.setValue(0)
+            self.ui.led1.setStyleSheet("color:black")
+            self.ui.led2.setStyleSheet("color:black")
+            self.ui.led3.setStyleSheet("color:black")
+            self.ui.led4.setStyleSheet("color:black")
+            cv2.destroyAllWindows()
 
     def save_parameter(self):
         # if not self.matrix:
         #     QtWidgets.QMessageBox.warning(self, '警告', "输入为空，请输入数据计算", buttons=QtWidgets.QMessageBox.Ok)
         # else:
-            now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
-            filename = './' + str(now_time) + ".cfg"
-            # 前面是地址，后面是文件类型,得到输入地址的文件名和地址
-            filepath, type = QFileDialog.getSaveFileName(self, "文件保存", filename, 'cfg(*.cfg)')
-            print(filepath)
-            with open(filepath, 'w') as f_cfg:
-                # 发送坐标信息方式
-                f_cfg.write(str(self.px_u1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y4_value))
-                f_cfg.write('\n')
-                f_cfg.close()
+        now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
+        filename = './' + str(now_time) + ".cfg"
+        # 前面是地址，后面是文件类型,得到输入地址的文件名和地址
+        filepath, type = QFileDialog.getSaveFileName(self, "文件保存", filename, 'cfg(*.cfg)')
+        with open(filepath, 'w') as f_cfg:
+            # 发送坐标信息方式
+            f_cfg.write(str(self.px_u1_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_v1_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_u2_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_v2_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_u3_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_v3_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_u4_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.px_v4_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_x1_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_y1_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_x2_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_y2_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_x3_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_y3_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_x4_value))
+            f_cfg.write('\n')
+            f_cfg.write(str(self.cm_y4_value))
+            f_cfg.write('\n')
+            f_cfg.close()
 
     def get_image(self):
         if not self.timer_camera.isActive():  # 若定时器未启动
@@ -133,23 +235,26 @@ class QmyMainWindow(QMainWindow):
         flag, self.image = self.cap.read()  # 从视频流中读取
         if not flag:
             self.log.warning("read image failed.")
-        if port == "frame1":
-            # 把读到的帧的大小设置为 320x240
-            show = cv2.resize(self.image, (320, 240))
-            # 视频色彩转换回RGB，这样才是现实的颜色
-            show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
-            # 把读取到的视频数据变成QImage形式
-            showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
-            self.ui.frame1.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
         else:
-            # 把读到的帧的大小重新设置为 640x480
-            show = cv2.resize(self.image, (640, 480))
-            # 视频色彩转换回RGB，这样才是现实的颜色
-            show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
-            showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
-            self.ui.frame2.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
+            if port == "frame1":
+                # 把读到的帧的大小设置为 320x240
+                show = cv2.resize(self.image, (320, 240))
+                # 视频色彩转换回RGB，这样才是现实的颜色
+                show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
+                # 把读取到的视频数据变成QImage形式
+                showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
+                self.ui.frame1.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
+            else:
+                # 把读到的帧的大小重新设置为 640x480
+                show = cv2.resize(self.image, (640, 480))
+                self.roi = show
+                # 视频色彩转换回RGB，这样才是现实的颜色
+                show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
+                showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
+                self.ui.frame2.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
 
     '''初始化所有槽函数'''
+
     def slot_init(self):
         self.timer_camera.timeout.connect(self.show_camera)  # 若定时器结束，则调用show_camera()
         self.ui.open_cam.clicked.connect(self.open_camera)
@@ -169,44 +274,152 @@ class QmyMainWindow(QMainWindow):
         snapPosY = newPos.y()
         snapPos = QtCore.QPointF(snapPosX, snapPosY)
         self.U = snapPos.x() - 636
-        self.V = snapPos.y() - 289
+        self.V = snapPos.y() - 288
         self.LabImagePOS.setText("像素坐标：U:%.3f, V:%.3f " % (self.U, self.V))
 
     def mousePressEvent(self, event):
+        global final_x, final_y
+        click_count = 0
         self.ui.frame2.setMouseTracking(True)
+
+        def click(event, x, y, flags, param):
+            global final_x, final_y
+            first_x = param[0]
+            first_y = param[1]
+            if event == cv2.EVENT_LBUTTONDOWN:
+                # 左上角点
+                if first_x - 32 < 0 and first_y - 24 < 0:
+                    final_x = x / 10
+                    final_y = y / 10
+                # 右上角点
+                elif first_x + 32 > 640 and first_y - 24 < 0:
+                    final_x = 640 - 64 + x / 10
+                    final_y = y / 10
+                # 左下角点
+                elif first_x - 32 < 0 and first_y + 24 > 480:
+                    final_x = x / 10
+                    final_y = 480 - 48 + y / 10
+                # 右下角点
+                elif first_x + 32 > 640 and first_y + 24 > 480:
+                    final_x = 640 - 64 + x / 10
+                    final_y = 480 - 48 + y / 10
+                # 上侧
+                elif (first_x - 32 > 0 or first_x + 32 < 640) and first_y - 24 < 0:
+                    final_x = first_x - 32 + x / 10
+                    final_y = y / 10
+                # 左侧
+                elif first_x - 32 < 0 and (first_y - 24 < 0 or first_y + 24 > 480):
+                    final_x = x / 10
+                    final_y = first_y - 24 + y / 10
+                # 下侧
+                elif (first_x - 32 > 0 or first_x + 32 < 640) and first_y + 24 > 480:
+                    final_x = first_x - 32 + x / 10
+                    final_y = 480 - 48 + y / 10
+                # 右侧
+                elif first_x + 32 > 640 and (first_y - 24 < 0 or first_y + 24 > 480):
+                    final_x = 640 - 64 + x / 10
+                    final_y = first_y - 24 + y / 10
+                else:
+                    final_x = first_x - 32 + x / 10
+                    final_y = first_y - 24 + y / 10
+
         if event.button() == Qt.LeftButton:  # 如果鼠标左键点击
-            if self.index == 0:
-                self.ui.left_up_px_u.setValue(event.pos().x() - 636)
-                self.ui.left_up_px_v.setValue(event.pos().y() - 289)
-                self.ui.led1.setStyleSheet("color:green")
-                self.ui.led2.setStyleSheet("color:black")
-                self.ui.led3.setStyleSheet("color:black")
-                self.ui.led4.setStyleSheet("color:black")
-                self.index += 1
-            elif self.index == 1:
-                self.ui.left_down_px_u.setValue(event.pos().x() - 636)
-                self.ui.left_down_px_v.setValue(event.pos().y() - 289)
-                self.ui.led1.setStyleSheet("color:black")
-                self.ui.led2.setStyleSheet("color:green")
-                self.ui.led3.setStyleSheet("color:black")
-                self.ui.led4.setStyleSheet("color:black")
-                self.index += 1
-            elif self.index == 2:
-                self.ui.right_down_px_u.setValue(event.pos().x() - 636)
-                self.ui.right_down_px_v.setValue(event.pos().y() - 289)
-                self.ui.led1.setStyleSheet("color:black")
-                self.ui.led2.setStyleSheet("color:black")
-                self.ui.led3.setStyleSheet("color:green")
-                self.ui.led4.setStyleSheet("color:black")
-                self.index += 1
-            elif self.index == 3:
-                self.ui.right_up_px_u.setValue(event.pos().x() - 636)
-                self.ui.right_up_px_v.setValue(event.pos().y() - 289)
-                self.ui.led1.setStyleSheet("color:black")
-                self.ui.led2.setStyleSheet("color:black")
-                self.ui.led3.setStyleSheet("color:black")
-                self.ui.led4.setStyleSheet("color:green")
-                self.index = 0
+            if 636 < event.pos().x() < 1274 and 288 < event.pos().y() < 768:
+                if self.roi is None:
+                    QtWidgets.QMessageBox.warning(self, '警告', "图像为空，请先拍照！", buttons=QtWidgets.QMessageBox.Ok)
+                    self.log.error("图像为空！")
+                else:
+                    if self.index == 0:
+                        self.ui.led1.setStyleSheet("color:green")
+                        self.ui.led2.setStyleSheet("color:black")
+                        self.ui.led3.setStyleSheet("color:black")
+                        self.ui.led4.setStyleSheet("color:black")
+                        click_count = 0
+                    elif self.index == 1:
+                        self.ui.led1.setStyleSheet("color:black")
+                        self.ui.led2.setStyleSheet("color:green")
+                        self.ui.led3.setStyleSheet("color:black")
+                        self.ui.led4.setStyleSheet("color:black")
+                        click_count = 1
+                    elif self.index == 2:
+                        self.ui.led1.setStyleSheet("color:black")
+                        self.ui.led2.setStyleSheet("color:black")
+                        self.ui.led3.setStyleSheet("color:green")
+                        self.ui.led4.setStyleSheet("color:black")
+                        click_count = 2
+                    elif self.index == 3:
+                        self.ui.led1.setStyleSheet("color:black")
+                        self.ui.led2.setStyleSheet("color:black")
+                        self.ui.led3.setStyleSheet("color:black")
+                        self.ui.led4.setStyleSheet("color:green")
+                        click_count = 3
+                    point_x = event.pos().x() - 636
+                    point_y = event.pos().y() - 288
+                    list_point = [point_x, point_y]
+                    new_x, new_y, roi_w, roi_h = crop_image(point_x, point_y)
+                    # 以点击坐标点为中心 裁剪图像64*32
+                    img = self.roi[new_y:roi_h, new_x:roi_w]
+                    # 将图像放大十倍
+                    img1 = cv2.resize(img, (640, 480))
+                    cv2.namedWindow("roi")
+                    cv2.setMouseCallback("roi", click, list_point)
+                    cv2.imshow("roi", img1)
+                    if click_count == 0:
+                        self.ui.right_up_px_u.setValue(final_x)
+                        self.ui.right_up_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 1:
+                        self.ui.left_up_px_u.setValue(final_x)
+                        self.ui.left_up_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 2:
+                        self.ui.left_down_px_u.setValue(final_x)
+                        self.ui.left_down_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 3:
+                        self.ui.right_down_px_u.setValue(final_x)
+                        self.ui.right_down_px_v.setValue(final_y)
+                        self.index = 0
+                    cv2.waitKey()
+                    cv2.destroyAllWindows()
+            else:
+                print("not in range")
+
+    # def mousePressEvent(self, event):
+    #     self.ui.frame2.setMouseTracking(True)
+    #     if event.button() == Qt.LeftButton:  # 如果鼠标左键点击
+    #         if self.index == 0:
+    #             self.ui.left_up_px_u.setValue(event.pos().x() - 636)
+    #             self.ui.left_up_px_v.setValue(event.pos().y() - 288)
+    #             self.ui.led1.setStyleSheet("color:green")
+    #             self.ui.led2.setStyleSheet("color:black")
+    #             self.ui.led3.setStyleSheet("color:black")
+    #             self.ui.led4.setStyleSheet("color:black")
+    #             self.index += 1
+    #         elif self.index == 1:
+    #             self.ui.left_down_px_u.setValue(event.pos().x() - 636)
+    #             self.ui.left_down_px_v.setValue(event.pos().y() - 288)
+    #             self.ui.led1.setStyleSheet("color:black")
+    #             self.ui.led2.setStyleSheet("color:green")
+    #             self.ui.led3.setStyleSheet("color:black")
+    #             self.ui.led4.setStyleSheet("color:black")
+    #             self.index += 1
+    #         elif self.index == 2:
+    #             self.ui.right_down_px_u.setValue(event.pos().x() - 636)
+    #             self.ui.right_down_px_v.setValue(event.pos().y() - 288)
+    #             self.ui.led1.setStyleSheet("color:black")
+    #             self.ui.led2.setStyleSheet("color:black")
+    #             self.ui.led3.setStyleSheet("color:green")
+    #             self.ui.led4.setStyleSheet("color:black")
+    #             self.index += 1
+    #         elif self.index == 3:
+    #             self.ui.right_up_px_u.setValue(event.pos().x() - 636)
+    #             self.ui.right_up_px_v.setValue(event.pos().y() - 288)
+    #             self.ui.led1.setStyleSheet("color:black")
+    #             self.ui.led2.setStyleSheet("color:black")
+    #             self.ui.led3.setStyleSheet("color:black")
+    #             self.ui.led4.setStyleSheet("color:green")
+    #             self.index = 0
 
     def mode_select(self):
         if self.ui.calculate_distance.isChecked():
@@ -347,10 +560,11 @@ class QmyMainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
-    glob.glob(os.path.join("./", "*.cfg"))
-    glob.glob(os.path.join("./", "*.log"))
+    # glob.glob(os.path.join("./", "*.cfg"))
+    # glob.glob(os.path.join("./", "*.log"))
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow
     ui.show()  # 调用ui的show()以显示。同样show()是源于父类QtWidgets.QWidget的
     sys.exit(app.exec_())  # 不加这句，程序界面会一闪而过
+

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="distance">
+    <file>坐标系1.jpg</file>
+    <file>distance.jpg</file>
+  </qresource>
+</RCC>
