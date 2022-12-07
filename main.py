@@ -52,7 +52,7 @@ def crop_image(point_x, point_y):
         roi_w = point_x + 32
         roi_h = 48
     # 左侧
-    elif point_x - 32 < 0 and (point_y - 24 < 0 or point_y + 24 > 480):
+    elif point_x - 32 < 0 and (point_y - 24 > 0 or point_y + 24 < 480):
         new_x = 0
         new_y = point_y - 24
         roi_w = 64
@@ -64,7 +64,7 @@ def crop_image(point_x, point_y):
         roi_w = point_x + 32
         roi_h = 480
     # 右侧
-    elif point_x + 32 > 640 and (point_y - 24 < 0 or point_y + 24 > 480):
+    elif point_x + 32 > 640 and (point_y - 24 > 0 or point_y + 24 < 480):
         new_x = 640 - 64
         new_y = point_y - 24
         roi_w = 640
@@ -308,7 +308,7 @@ class QmyMainWindow(QMainWindow):
                     final_x = first_x - 32 + x / 10
                     final_y = y / 10
                 # 左侧
-                elif first_x - 32 < 0 and (first_y - 24 < 0 or first_y + 24 > 480):
+                elif first_x - 32 < 0 and (first_y - 24 > 0 or first_y + 24 < 480):
                     final_x = x / 10
                     final_y = first_y - 24 + y / 10
                 # 下侧
@@ -316,7 +316,7 @@ class QmyMainWindow(QMainWindow):
                     final_x = first_x - 32 + x / 10
                     final_y = 480 - 48 + y / 10
                 # 右侧
-                elif first_x + 32 > 640 and (first_y - 24 < 0 or first_y + 24 > 480):
+                elif first_x + 32 > 640 and (first_y - 24 > 0 or first_y + 24 < 480):
                     final_x = 640 - 64 + x / 10
                     final_y = first_y - 24 + y / 10
                 else:
@@ -359,29 +359,32 @@ class QmyMainWindow(QMainWindow):
                     new_x, new_y, roi_w, roi_h = crop_image(point_x, point_y)
                     # 以点击坐标点为中心 裁剪图像64*32
                     img = self.roi[new_y:roi_h, new_x:roi_w]
-                    # 将图像放大十倍
-                    img1 = cv2.resize(img, (640, 480))
-                    cv2.namedWindow("roi")
-                    cv2.setMouseCallback("roi", click, list_point)
-                    cv2.imshow("roi", img1)
-                    if click_count == 0:
-                        self.ui.right_up_px_u.setValue(final_x)
-                        self.ui.right_up_px_v.setValue(final_y)
-                        self.index += 1
-                    elif click_count == 1:
-                        self.ui.left_up_px_u.setValue(final_x)
-                        self.ui.left_up_px_v.setValue(final_y)
-                        self.index += 1
-                    elif click_count == 2:
-                        self.ui.left_down_px_u.setValue(final_x)
-                        self.ui.left_down_px_v.setValue(final_y)
-                        self.index += 1
-                    elif click_count == 3:
-                        self.ui.right_down_px_u.setValue(final_x)
-                        self.ui.right_down_px_v.setValue(final_y)
-                        self.index = 0
-                    cv2.waitKey()
-                    cv2.destroyAllWindows()
+                    if img is None:
+                        self.log.error("crop image is empty!")
+                    else:
+                        # 将图像放大十倍
+                        img1 = cv2.resize(img, (640, 480))
+                        cv2.namedWindow("roi")
+                        cv2.setMouseCallback("roi", click, list_point)
+                        cv2.imshow("roi", img1)
+                        if click_count == 0:
+                            self.ui.right_up_px_u.setValue(final_x)
+                            self.ui.right_up_px_v.setValue(final_y)
+                            self.index += 1
+                        elif click_count == 1:
+                            self.ui.left_up_px_u.setValue(final_x)
+                            self.ui.left_up_px_v.setValue(final_y)
+                            self.index += 1
+                        elif click_count == 2:
+                            self.ui.left_down_px_u.setValue(final_x)
+                            self.ui.left_down_px_v.setValue(final_y)
+                            self.index += 1
+                        elif click_count == 3:
+                            self.ui.right_down_px_u.setValue(final_x)
+                            self.ui.right_down_px_v.setValue(final_y)
+                            self.index = 0
+                        cv2.waitKey()
+                        cv2.destroyAllWindows()
             else:
                 print("not in range")
 
