@@ -339,6 +339,7 @@ class QmyMainWindow(QMainWindow):
                         self.ui.led1.setStyleSheet("color:black")
                         self.ui.led2.setStyleSheet("color:green")
                         self.ui.led3.setStyleSheet("color:black")
+
                         self.ui.led4.setStyleSheet("color:black")
                         click_count = 1
                     elif self.index == 2:
@@ -386,43 +387,7 @@ class QmyMainWindow(QMainWindow):
                         cv2.waitKey()
                         cv2.destroyAllWindows()
             else:
-                print("not in range")
-
-    # def mousePressEvent(self, event):
-    #     self.ui.frame2.setMouseTracking(True)
-    #     if event.button() == Qt.LeftButton:  # 如果鼠标左键点击
-    #         if self.index == 0:
-    #             self.ui.left_up_px_u.setValue(event.pos().x() - 636)
-    #             self.ui.left_up_px_v.setValue(event.pos().y() - 288)
-    #             self.ui.led1.setStyleSheet("color:green")
-    #             self.ui.led2.setStyleSheet("color:black")
-    #             self.ui.led3.setStyleSheet("color:black")
-    #             self.ui.led4.setStyleSheet("color:black")
-    #             self.index += 1
-    #         elif self.index == 1:
-    #             self.ui.left_down_px_u.setValue(event.pos().x() - 636)
-    #             self.ui.left_down_px_v.setValue(event.pos().y() - 288)
-    #             self.ui.led1.setStyleSheet("color:black")
-    #             self.ui.led2.setStyleSheet("color:green")
-    #             self.ui.led3.setStyleSheet("color:black")
-    #             self.ui.led4.setStyleSheet("color:black")
-    #             self.index += 1
-    #         elif self.index == 2:
-    #             self.ui.right_down_px_u.setValue(event.pos().x() - 636)
-    #             self.ui.right_down_px_v.setValue(event.pos().y() - 288)
-    #             self.ui.led1.setStyleSheet("color:black")
-    #             self.ui.led2.setStyleSheet("color:black")
-    #             self.ui.led3.setStyleSheet("color:green")
-    #             self.ui.led4.setStyleSheet("color:black")
-    #             self.index += 1
-    #         elif self.index == 3:
-    #             self.ui.right_up_px_u.setValue(event.pos().x() - 636)
-    #             self.ui.right_up_px_v.setValue(event.pos().y() - 288)
-    #             self.ui.led1.setStyleSheet("color:black")
-    #             self.ui.led2.setStyleSheet("color:black")
-    #             self.ui.led3.setStyleSheet("color:black")
-    #             self.ui.led4.setStyleSheet("color:green")
-    #             self.index = 0
+                print("mouse not in range")
 
     def mode_select(self):
         if self.ui.calculate_distance.isChecked():
