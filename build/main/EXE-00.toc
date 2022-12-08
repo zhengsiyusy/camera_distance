@@ -54,7 +54,7 @@
  [],
  False,
  False,
- 1670484090,
+ 1670487285,
  [('runw.exe',
    'D:\\YOLOV5\\Anaconda\\envs\\pyqt5_env\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
    'EXECUTABLE')])
