@@ -12,9 +12,12 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QFileDialog, QApplication
 from PyQt5.QtMultimedia import QCameraInfo
-from loginfo.log import init_log
+from log.log import init_log
 from source.camera import Ui_camera
+import platform
 
+python_version = platform.python_version()
+code_version = "0.0.1"
 final_x = 0
 final_y = 0
 
@@ -78,25 +81,6 @@ def crop_image(point_x, point_y):
     return new_x, new_y, roi_w, roi_h
 
 
-# # 装饰器实现类似于静态变量的功能
-# def static_vars(**kwargs):
-#     def decorate(func):
-#         for k in kwargs:
-#             setattr(func, k, kwargs[k])
-#         return func
-#
-#     return decorate
-#
-#
-# @static_vars(first_time=0)
-# def foo():
-#     foo.first_time = 0
-#
-#
-# class Foo(object):
-#     first_time = 0
-
-
 class QmyMainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -121,6 +105,8 @@ class QmyMainWindow(QMainWindow):
         self.index = 0
 
     def get_camera_info(self):
+        self.log.info("Python Version: %s" % python_version)
+        self.log.info("Code Version: %s " % code_version)
         cameras = QCameraInfo.availableCameras()
         if len(cameras) > 0:
             camInfo = QCameraInfo.defaultCamera()
@@ -528,8 +514,7 @@ class QmyMainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
-    # glob.glob(os.path.join("./", "*.cfg"))
-    # glob.glob(os.path.join("./", "*.log"))
+
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow

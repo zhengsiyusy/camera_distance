@@ -688,7 +688,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;3. 在拍摄画面选取图中下图中对应位置点像素坐标对坐标进行公式计算。实际坐标需要手动测量现实中与像素坐标点对应点的水平与垂直距离。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;3.计算流程 &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;（1）在拍摄画面选取下图中对应位置点像素坐标。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;（2）手动测量实际以相机圆心为原点，单位距离为1cm的坐标系下的与像素点坐标对应的实际距离。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;（3）填写完成点击按钮计算生成参数。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;注意：点击选取像素坐标点时在方法画面中选好坐标点单击即可自动填写坐标到图中对应位置。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(26, 255, 14);</string>

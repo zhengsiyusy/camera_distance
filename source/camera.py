@@ -429,17 +429,11 @@ class Ui_camera(object):
         self.left_down_cm_x.setPrefix(_translate("camera", "X:"))
         self.left_down_cm_y.setPrefix(_translate("camera", "Y:"))
         self.left_down.setTabText(self.left_down.indexOf(self.tab_4), _translate("camera", "实际坐标(cm)"))
-        self.open_cam.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" font-size:10pt;\">1. "
-                                                      "打开相机，使相机对准需要校准的目标。</span></p></body></html>"))
+        self.open_cam.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" font-size:10pt;\">1. 打开相机，使相机对准需要校准的目标。</span></p></body></html>"))
         self.open_cam.setText(_translate("camera", "打开相机"))
-        self.get_image.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" font-size:10pt;\">2. "
-                                                       "点击拍照，画面将显示在拍摄画面处。</span></p></body></html>"))
+        self.get_image.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" font-size:10pt;\">2. 点击拍照，画面将显示在拍摄画面处。</span></p></body></html>"))
         self.get_image.setText(_translate("camera", "拍照"))
-        self.calculate_position.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" "
-                                                                "font-size:10pt;\">3. "
-                                                                "在拍摄画面选取图中下图中对应位置点像素坐标对坐标进行公式计算。"
-                                                                "实际坐标需要手动测量现实中与像素坐标点对应点的水平与垂直距离。"
-                                                                "</span></p></body></html>"))
+        self.calculate_position.setToolTip(_translate("camera", "<html><head/><body><p><span style=\" font-size:10pt;\">3.计算流程 </span></p><p><span style=\" font-size:10pt;\">（1）在拍摄画面选取下图中对应位置点像素坐标。</span></p><p><span style=\" font-size:10pt;\">（2）手动测量实际以相机圆心为原点，单位距离为1cm的坐标系下的与像素点坐标对应的实际距离。</span></p><p><span style=\" font-size:10pt;\">（3）填写完成点击按钮计算生成参数。</span></p><p><span style=\" font-size:10pt;\">注意：点击选取像素坐标点时在方法画面中选好坐标点单击即可自动填写坐标到图中对应位置。</span></p></body></html>"))
         self.calculate_position.setText(_translate("camera", "计算坐标配置"))
         self.save_para.setText(_translate("camera", "保存"))
         self.led1.setText(_translate("camera", "<html><head/><body><p><span style=\" font-size:12pt;\">●</span></p></body></html>"))

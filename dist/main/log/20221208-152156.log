@@ -1,0 +1,6 @@
+2022-12-08 15:21:56,244 main.py[line:108] INFO Python Version: 3.9.12
+2022-12-08 15:21:56,244 main.py[line:109] INFO Code Version: 0.0.1 
+2022-12-08 15:21:56,344 main.py[line:114] INFO The camera image parameters are as follows:
+ HBVCAM CAMERA
+2022-12-08 15:21:56,344 main.py[line:115] INFO Camera preview image resolution: 320*240
+2022-12-08 15:21:56,344 main.py[line:116] INFO Image resolution of shooting picture: 640*480
