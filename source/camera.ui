@@ -192,8 +192,8 @@
           <rect>
            <x>0</x>
            <y>30</y>
-           <width>601</width>
-           <height>431</height>
+           <width>581</width>
+           <height>421</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -209,9 +209,9 @@
         <widget class="QTabWidget" name="left_up">
          <property name="geometry">
           <rect>
-           <x>230</x>
-           <y>70</y>
-           <width>211</width>
+           <x>260</x>
+           <y>80</y>
+           <width>171</width>
            <height>51</height>
           </rect>
          </property>
@@ -225,14 +225,14 @@
          </property>
          <widget class="QWidget" name="tab_1">
           <attribute name="title">
-           <string>像素坐标(px)</string>
+           <string>像素坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>12</x>
+             <x>2</x>
              <y>0</y>
-             <width>178</width>
+             <width>161</width>
              <height>22</height>
             </rect>
            </property>
@@ -271,15 +271,15 @@
          </widget>
          <widget class="QWidget" name="tab_2">
           <attribute name="title">
-           <string>实际坐标(cm)</string>
+           <string>实际坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>11</x>
+             <x>1</x>
              <y>0</y>
-             <width>185</width>
-             <height>25</height>
+             <width>161</width>
+             <height>22</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -313,9 +313,9 @@
         <widget class="QTabWidget" name="right_down">
          <property name="geometry">
           <rect>
-           <x>260</x>
+           <x>240</x>
            <y>340</y>
-           <width>211</width>
+           <width>171</width>
            <height>51</height>
           </rect>
          </property>
@@ -329,14 +329,14 @@
          </property>
          <widget class="QWidget" name="tab_5">
           <attribute name="title">
-           <string>像素坐标(px)</string>
+           <string>像素坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>11</x>
+             <x>1</x>
              <y>0</y>
-             <width>178</width>
+             <width>161</width>
              <height>22</height>
             </rect>
            </property>
@@ -372,15 +372,15 @@
          </widget>
          <widget class="QWidget" name="tab_6">
           <attribute name="title">
-           <string>实际坐标(cm)</string>
+           <string>实际坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>12</x>
+             <x>2</x>
              <y>0</y>
-             <width>185</width>
-             <height>25</height>
+             <width>161</width>
+             <height>22</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -417,9 +417,9 @@
         <widget class="QTabWidget" name="right_up">
          <property name="geometry">
           <rect>
-           <x>390</x>
+           <x>440</x>
            <y>200</y>
-           <width>211</width>
+           <width>161</width>
            <height>51</height>
           </rect>
          </property>
@@ -433,32 +433,20 @@
          </property>
          <widget class="QWidget" name="tab_7">
           <attribute name="title">
-           <string>像素坐标(px)</string>
+           <string>像素坐标</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="layoutWidget_4">
            <property name="geometry">
             <rect>
-             <x>11</x>
+             <x>0</x>
              <y>0</y>
-             <width>181</width>
+             <width>161</width>
              <height>22</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QDoubleSpinBox" name="right_up_px_u">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>87</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>87</width>
-                <height>20</height>
-               </size>
-              </property>
               <property name="prefix">
                <string>U:</string>
               </property>
@@ -475,12 +463,6 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="right_up_px_v">
-              <property name="minimumSize">
-               <size>
-                <width>86</width>
-                <height>0</height>
-               </size>
-              </property>
               <property name="prefix">
                <string>V:</string>
               </property>
@@ -497,26 +479,20 @@
          </widget>
          <widget class="QWidget" name="tab_8">
           <attribute name="title">
-           <string>实际坐标(cm)</string>
+           <string>实际坐标</string>
           </attribute>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="layoutWidget_5">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>0</x>
              <y>0</y>
-             <width>181</width>
-             <height>25</height>
+             <width>161</width>
+             <height>22</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <widget class="QDoubleSpinBox" name="right_up_cm_x">
-              <property name="minimumSize">
-               <size>
-                <width>5</width>
-                <height>15</height>
-               </size>
-              </property>
               <property name="prefix">
                <string>X:</string>
               </property>
@@ -545,9 +521,9 @@
         <widget class="QTabWidget" name="left_down">
          <property name="geometry">
           <rect>
-           <x>50</x>
-           <y>150</y>
-           <width>211</width>
+           <x>70</x>
+           <y>160</y>
+           <width>171</width>
            <height>51</height>
           </rect>
          </property>
@@ -561,14 +537,14 @@
          </property>
          <widget class="QWidget" name="tab_3">
           <attribute name="title">
-           <string>像素坐标(px)</string>
+           <string>像素坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>11</x>
+             <x>1</x>
              <y>0</y>
-             <width>178</width>
+             <width>161</width>
              <height>22</height>
             </rect>
            </property>
@@ -604,15 +580,15 @@
          </widget>
          <widget class="QWidget" name="tab_4">
           <attribute name="title">
-           <string>实际坐标(cm)</string>
+           <string>实际坐标</string>
           </attribute>
           <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>11</x>
+             <x>1</x>
              <y>0</y>
-             <width>185</width>
-             <height>25</height>
+             <width>161</width>
+             <height>22</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -710,8 +686,58 @@
         <widget class="QLabel" name="led1">
          <property name="geometry">
           <rect>
-           <x>340</x>
+           <x>330</x>
            <y>150</y>
+           <width>16</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>黑体</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="buddy">
+          <cstring>left_up</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="led5">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>310</y>
+           <width>16</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>黑体</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="buddy">
+          <cstring>left_up</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="led7">
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>250</y>
            <width>16</width>
            <height>21</height>
           </rect>
@@ -735,33 +761,8 @@
         <widget class="QLabel" name="led3">
          <property name="geometry">
           <rect>
-           <x>330</x>
-           <y>320</y>
-           <width>16</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>黑体</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="buddy">
-          <cstring>left_up</cstring>
-         </property>
-        </widget>
-        <widget class="QLabel" name="led4">
-         <property name="geometry">
-          <rect>
-           <x>520</x>
-           <y>250</y>
+           <x>160</x>
+           <y>220</y>
            <width>16</width>
            <height>21</height>
           </rect>
@@ -785,8 +786,8 @@
         <widget class="QLabel" name="led2">
          <property name="geometry">
           <rect>
-           <x>160</x>
-           <y>220</y>
+           <x>250</x>
+           <y>180</y>
            <width>16</width>
            <height>21</height>
           </rect>
@@ -806,6 +807,533 @@
          <property name="buddy">
           <cstring>left_up</cstring>
          </property>
+        </widget>
+        <widget class="QLabel" name="led4">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>260</y>
+           <width>16</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>黑体</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="buddy">
+          <cstring>left_up</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="led6">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>280</y>
+           <width>16</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>黑体</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="buddy">
+          <cstring>left_up</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="led8">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>200</y>
+           <width>16</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>黑体</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;●&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="buddy">
+          <cstring>left_up</cstring>
+         </property>
+        </widget>
+        <widget class="QTabWidget" name="left_mid">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>110</y>
+           <width>171</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_15">
+          <attribute name="title">
+           <string>像素坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_10">
+           <property name="geometry">
+            <rect>
+             <x>2</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_18">
+            <item>
+             <widget class="QDoubleSpinBox" name="left_mid_px_u">
+              <property name="prefix">
+               <string>U:</string>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>640.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="left_mid_px_v">
+              <property name="prefix">
+               <string>V:</string>
+              </property>
+              <property name="maximum">
+               <double>480.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_18">
+          <attribute name="title">
+           <string>实际坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_13">
+           <property name="geometry">
+            <rect>
+             <x>1</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_21">
+            <item>
+             <widget class="QDoubleSpinBox" name="left_mid_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
+              <property name="minimum">
+               <double>-500.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="left_mid_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QTabWidget" name="bottom_mid">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>290</y>
+           <width>171</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_19">
+          <attribute name="title">
+           <string>像素坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_14">
+           <property name="geometry">
+            <rect>
+             <x>2</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <item>
+             <widget class="QDoubleSpinBox" name="bottom_mid_px_u">
+              <property name="prefix">
+               <string>U:</string>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>640.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="bottom_mid_px_v">
+              <property name="prefix">
+               <string>V:</string>
+              </property>
+              <property name="maximum">
+               <double>480.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_22">
+          <attribute name="title">
+           <string>实际坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_17">
+           <property name="geometry">
+            <rect>
+             <x>1</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_25">
+            <item>
+             <widget class="QDoubleSpinBox" name="bottom_mid_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
+              <property name="minimum">
+               <double>-500.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="bottom_mid_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QTabWidget" name="right_mid">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>300</y>
+           <width>171</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_23">
+          <attribute name="title">
+           <string>像素坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_18">
+           <property name="geometry">
+            <rect>
+             <x>2</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_26">
+            <item>
+             <widget class="QDoubleSpinBox" name="right_mid_px_u">
+              <property name="prefix">
+               <string>U:</string>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>640.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="right_mid_px_v">
+              <property name="prefix">
+               <string>V:</string>
+              </property>
+              <property name="maximum">
+               <double>480.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_26">
+          <attribute name="title">
+           <string>实际坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_21">
+           <property name="geometry">
+            <rect>
+             <x>1</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_29">
+            <item>
+             <widget class="QDoubleSpinBox" name="right_mid_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
+              <property name="minimum">
+               <double>-500.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="right_mid_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QTabWidget" name="top_mid">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>130</y>
+           <width>171</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_27">
+          <attribute name="title">
+           <string>像素坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_22">
+           <property name="geometry">
+            <rect>
+             <x>2</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_30">
+            <item>
+             <widget class="QDoubleSpinBox" name="top_mid_px_u">
+              <property name="prefix">
+               <string>U:</string>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>640.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="top_mid_px_v">
+              <property name="prefix">
+               <string>V:</string>
+              </property>
+              <property name="maximum">
+               <double>480.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_30">
+          <attribute name="title">
+           <string>实际坐标</string>
+          </attribute>
+          <widget class="QWidget" name="layoutWidget_25">
+           <property name="geometry">
+            <rect>
+             <x>1</x>
+             <y>0</y>
+             <width>161</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_33">
+            <item>
+             <widget class="QDoubleSpinBox" name="top_mid_cm_x">
+              <property name="prefix">
+               <string>X:</string>
+              </property>
+              <property name="minimum">
+               <double>-500.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="top_mid_cm_y">
+              <property name="prefix">
+               <string>Y:</string>
+              </property>
+              <property name="maximum">
+               <double>500.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>221</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>像素坐标单位：px</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>实际坐标单位：cm</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
