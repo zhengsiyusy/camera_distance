@@ -13,6 +13,7 @@ from PyQt5.QtMultimedia import QCameraInfo
 from log.log import init_log
 from source.camera import Ui_camera
 import platform
+import matplotlib.pyplot as plt
 
 python_version = platform.python_version()
 code_version = "0.0.1"
@@ -103,6 +104,7 @@ class QmyMainWindow(QMainWindow):
         self.index = 0
 
     '''初始化所有槽函数'''
+
     def slot_init(self):
         self.timer_camera.timeout.connect(self.show_camera)  # 若定时器结束，则调用show_camera()
         self.ui.open_cam.clicked.connect(self.open_camera)
@@ -455,6 +457,14 @@ class QmyMainWindow(QMainWindow):
                         img1 = cv2.resize(img, (640, 480))
                         cv2.namedWindow("roi")
                         cv2.setMouseCallback("roi", click, list_point)
+
+                        # def show_image(image):
+                        #     plt.figure(1)
+                        #     plt.axis("off")  # off为不显示刻度，on为显示刻度，默认是on
+                        #     plt.imshow(image)
+                        #     plt.show()
+                        #
+                        # show_image(img1)
                         cv2.imshow("roi", img1)
 
                         if click_count == 0:
@@ -695,10 +705,8 @@ class QmyMainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
-
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow
     ui.show()  # 调用ui的show()以显示。同样show()是源于父类QtWidgets.QWidget的
     sys.exit(app.exec_())  # 不加这句，程序界面会一闪而过
-
