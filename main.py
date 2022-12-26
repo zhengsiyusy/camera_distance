@@ -1,6 +1,7 @@
 # / -*-codeing = utf-8  -*-
 # TIME : 2022/11/22 10:16
 # File : my_camera_mainwindow
+import os
 import sys
 import cv2
 import math
@@ -10,13 +11,12 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QLabel, QFileDialog, QApplication
 from PyQt5.QtMultimedia import QCameraInfo
-from log.log import init_log
 from source.camera import Ui_camera
 import platform
-import matplotlib.pyplot as plt
+import yaml
 
 python_version = platform.python_version()
-code_version = "0.0.1"
+code_version = "0.0.2"
 final_x = 0
 final_y = 0
 
@@ -80,6 +80,37 @@ def crop_image(point_x, point_y):
     return new_x, new_y, roi_w, roi_h
 
 
+class WRYaml:
+    """ yaml文件的读和写 """
+
+    # def __init__(self):
+    #     """ 指定yaml文件的路径 """
+    #     self.configpath = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'config')
+
+    # def read_yaml(self, yaml_file='conf.yaml'):
+    #     """ 读取yaml里面里面的数据"""
+    #     try:
+    #         with open(os.path.join(self.configpath, yaml_file), "r", encoding='UTF-8') as f:
+    #             return yaml.load(f, Loader=yaml.Loader)
+    #     except Exception as error:
+    #         print(f'读取yaml失败，错误如下：{error}')
+    #         return False
+
+    def write_yaml(self, data, filepath, mode='a'):
+        """ 往yaml里面写入数据
+            filepath：yaml文件名
+            data：要写入的数据
+            mode：写入方式： w，覆盖写入， a，追加写入
+        """
+        try:
+            with open(filepath, mode, encoding="utf-8") as f:
+                yaml.dump(data, f)
+            return True
+        except Exception as error:
+            print(f'yaml文件写入失败，错误如下：\n{error}')
+            return False
+
+
 class QmyMainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -97,11 +128,13 @@ class QmyMainWindow(QMainWindow):
         self.LabImagePOS = QLabel(name)
         self.ui.statusbar.addWidget(self.LabImagePOS)
         # 日志管理
-        self.log = init_log()
+        # self.log = init_log()
         self.camera = None  # QCamera对象
-        self.get_camera_info()
         self.roi = None
         self.index = 0
+        self.sta_distance = False
+        self.sta_angle = False
+        self.sta_position = False
 
     '''初始化所有槽函数'''
 
@@ -115,25 +148,24 @@ class QmyMainWindow(QMainWindow):
         self.ui.calculate_distance.clicked['bool'].connect(self.mode_select)
         self.ui.calculate_angle.clicked['bool'].connect(self.mode_select)
 
-    def get_camera_info(self):
-        self.log.info("Python Version: %s" % python_version)
-        self.log.info("Code Version: %s " % code_version)
+    def get_camera_info(self, filepath):
+        data = {'Python_Version': python_version, 'Code_Version': code_version}
+        WRYaml.write_yaml(self, filepath=filepath, data=data)
         cameras = QCameraInfo.availableCameras()
         if len(cameras) > 0:
             camInfo = QCameraInfo.defaultCamera()
             info = camInfo.description()
-            self.log.info("The camera image parameters are as follows:\n %s" % info)
-            self.log.info("Camera preview image resolution: 320*240")
-            self.log.info("Image resolution of shooting picture: 640*480")
+            data = {'camera_type': info, 'image size': '640 * 480', }
+            WRYaml.write_yaml(self, filepath=filepath, data=data)
         else:
-            self.log.warning("The camera doesn't exist.")
+            print("The camera doesn't exist.")
 
     def open_camera(self):
         if not self.timer_camera.isActive():  # 若定时器未启动
             flag = self.cap.open(self.CAM_NUM)  # 参数是0，表示打开笔记本的内置摄像头，参数是视频文件路径则打开视频
             if not flag:  # flag表示open()成不成功
                 msg = QtWidgets.QMessageBox.warning(self, '警告', "请检查相机与电脑是否连接正确", buttons=QtWidgets.QMessageBox.Ok)
-                self.log.warning("Please check that the camera is properly connected to the computer")
+                # self.log.warning("Please check that the camera is properly connected to the computer")
             else:
                 self.timer_camera.start(30)  # 定时器开始计时30ms，结果是每过30ms从摄像头中取一帧显示
                 self.ui.open_cam.setText("关闭相机")
@@ -195,81 +227,60 @@ class QmyMainWindow(QMainWindow):
 
     def save_parameter(self):
         now_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
-        filename = './' + str(now_time) + ".cfg"
+        filename = './' + str(now_time) + ".yaml"
         # 前面是地址，后面是文件类型,得到输入地址的文件名和地址
-        filepath, type = QFileDialog.getSaveFileName(self, "文件保存", filename, 'cfg(*.cfg)')
+        filepath, type = QFileDialog.getSaveFileName(self, "文件保存", filename, 'yaml(*.yaml)')
+
         if type:
-            with open(filepath, 'w') as f_cfg:
-                # 发送坐标信息方式
-                f_cfg.write(str(self.px_u1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v4_value))
-                f_cfg.write('\n')
+            st = QmyMainWindow.calculate_position_result_save(self)
+            if st:
+                QmyMainWindow.get_camera_info(self, filepath)
+                if self.sta_distance:
+                    data_d = {'furthest_distance': {'d_camera_height': self.height_value_d,
+                                                    'd_camera_angle': self.angle_value_d,
+                                                    'd_camera_distance': self.final_farthest_d}}
+                    WRYaml.write_yaml(self, filepath=filepath, data=data_d)
+                if self.sta_angle:
+                    data_a = {'camera_angle': {'a_camera_height': self.height_value_a,
+                                               'a_camera_angle': self.final_angle_a,
+                                               'a_camera_distance': self.farthest_value_a}}
+                    WRYaml.write_yaml(self, filepath=filepath, data=data_a)
+                if self.sta_position:
+                    data_p = {'position': {'p1_u': self.px_u1_value,
+                                           'p1_v': self.px_v1_value,
+                                           'p2_u': self.px_u2_value,
+                                           'p2_v': self.px_v2_value,
+                                           'p3_u': self.px_u3_value,
+                                           'p3_v': self.px_v3_value,
+                                           'p4_u': self.px_u4_value,
+                                           'p4_v': self.px_v4_value,
+                                           'p5_u': self.px_u5_value,
+                                           'p5_v': self.px_v5_value,
+                                           'p6_u': self.px_u6_value,
+                                           'p6_v': self.px_v6_value,
+                                           'p7_u': self.px_u7_value,
+                                           'p7_v': self.px_v7_value,
+                                           'p8_u': self.px_u8_value,
+                                           'p8_v': self.px_v8_value,
 
-                f_cfg.write(str(self.px_u5_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v5_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u6_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v6_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u7_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v7_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_u8_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.px_v8_value))
-                f_cfg.write('\n')
-
-                f_cfg.write(str(self.cm_x1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y1_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y2_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y3_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y4_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x5_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y5_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x6_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y6_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x7_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y7_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_x8_value))
-                f_cfg.write('\n')
-                f_cfg.write(str(self.cm_y8_value))
-                f_cfg.write('\n')
-                f_cfg.close()
-        else:
-            return
+                                           'c1_x': self.cm_x1_value,
+                                           'c1_y': self.cm_y1_value,
+                                           'c2_x': self.cm_x2_value,
+                                           'c2_y': self.cm_y2_value,
+                                           'c3_x': self.cm_x3_value,
+                                           'c3_y': self.cm_y3_value,
+                                           'c4_x': self.cm_x4_value,
+                                           'c4_y': self.cm_y4_value,
+                                           'c5_x': self.cm_x5_value,
+                                           'c5_y': self.cm_y6_value,
+                                           'c6_x': self.cm_x6_value,
+                                           'c6_y': self.cm_y6_value,
+                                           'c7_x': self.cm_x7_value,
+                                           'c7_y': self.cm_y7_value,
+                                           'c8_x': self.cm_x8_value,
+                                           'c8_y': self.cm_y8_value,
+                                           }}
+                    WRYaml.write_yaml(self, filepath=filepath, data=data_p)
 
     def get_image(self):
         if not self.timer_camera.isActive():  # 若定时器未启动
@@ -280,7 +291,7 @@ class QmyMainWindow(QMainWindow):
     def show_camera(self, port="frame1"):
         flag, self.image = self.cap.read()  # 从视频流中读取
         if not flag:
-            self.log.warning("read image failed.")
+            print("read image failed.")
         else:
             if port == "frame1":
                 # 把读到的帧的大小设置为 320x240
@@ -313,7 +324,6 @@ class QmyMainWindow(QMainWindow):
 
     def mousePressEvent(self, event):
         global final_x, final_y
-        # click_count = 0
         self.ui.frame2.setMouseTracking(True)
 
         def click(event, x, y, flags, param):
@@ -361,7 +371,7 @@ class QmyMainWindow(QMainWindow):
             if 636 < event.pos().x() < 1274 and 288 < event.pos().y() < 768:
                 if self.roi is None:
                     QtWidgets.QMessageBox.warning(self, '警告', "图像为空，请先拍照！", buttons=QtWidgets.QMessageBox.Ok)
-                    self.log.error("图像为空！")
+                    # self.log.error("图像为空！")
                 else:
                     if self.index == 0:
                         self.ui.led1.setStyleSheet("color:green")
@@ -443,7 +453,6 @@ class QmyMainWindow(QMainWindow):
                         self.ui.led7.setStyleSheet("color:black")
                         self.ui.led8.setStyleSheet("color:green")
                         click_count = 7
-
                     point_x = event.pos().x() - 636
                     point_y = event.pos().y() - 288
                     list_point = [point_x, point_y]
@@ -457,50 +466,42 @@ class QmyMainWindow(QMainWindow):
                         img1 = cv2.resize(img, (640, 480))
                         cv2.namedWindow("roi")
                         cv2.setMouseCallback("roi", click, list_point)
-
-                        # def show_image(image):
-                        #     plt.figure(1)
-                        #     plt.axis("off")  # off为不显示刻度，on为显示刻度，默认是on
-                        #     plt.imshow(image)
-                        #     plt.show()
-                        #
-                        # show_image(img1)
                         cv2.imshow("roi", img1)
 
-                        if click_count == 0:
-                            self.ui.top_mid_px_u.setValue(final_x)
-                            self.ui.top_mid_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 1:
-                            self.ui.left_up_px_u.setValue(final_x)
-                            self.ui.left_up_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 2:
-                            self.ui.left_mid_px_u.setValue(final_x)
-                            self.ui.left_mid_px_v.setValue(final_y)
-                            self.index += 1
-                        if click_count == 3:
-                            self.ui.left_down_px_u.setValue(final_x)
-                            self.ui.left_down_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 4:
-                            self.ui.bottom_mid_px_u.setValue(final_x)
-                            self.ui.bottom_mid_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 5:
-                            self.ui.right_down_px_u.setValue(final_x)
-                            self.ui.right_down_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 6:
-                            self.ui.right_mid_px_u.setValue(final_x)
-                            self.ui.right_mid_px_v.setValue(final_y)
-                            self.index += 1
-                        elif click_count == 7:
-                            self.ui.right_up_px_u.setValue(final_x)
-                            self.ui.right_up_px_v.setValue(final_y)
-                            self.index = 0
-                        cv2.waitKey()
-                        cv2.destroyAllWindows()
+                    if click_count == 0:
+                        self.ui.top_mid_px_u.setValue(final_x)
+                        self.ui.top_mid_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 1:
+                        self.ui.left_up_px_u.setValue(final_x)
+                        self.ui.left_up_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 2:
+                        self.ui.left_mid_px_u.setValue(final_x)
+                        self.ui.left_mid_px_v.setValue(final_y)
+                        self.index += 1
+                    if click_count == 3:
+                        self.ui.left_down_px_u.setValue(final_x)
+                        self.ui.left_down_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 4:
+                        self.ui.bottom_mid_px_u.setValue(final_x)
+                        self.ui.bottom_mid_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 5:
+                        self.ui.right_down_px_u.setValue(final_x)
+                        self.ui.right_down_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 6:
+                        self.ui.right_mid_px_u.setValue(final_x)
+                        self.ui.right_mid_px_v.setValue(final_y)
+                        self.index += 1
+                    elif click_count == 7:
+                        self.ui.right_up_px_u.setValue(final_x)
+                        self.ui.right_up_px_v.setValue(final_y)
+                        self.index = 0
+                    cv2.waitKey()
+                    cv2.destroyAllWindows()
             else:
                 print("mouse not in range")
 
@@ -588,6 +589,7 @@ class QmyMainWindow(QMainWindow):
                 (self.px_u7_value == 0 and self.px_v7_value == 0 and self.cm_x7_value == 0 and self.cm_y7_value == 0) or
                 (self.px_u8_value == 0 and self.px_v8_value == 0 and self.cm_x8_value == 0 and self.cm_y8_value == 0)):
             QtWidgets.QMessageBox.warning(self, '警告', "输入坐标参数有误，请重新输入", buttons=QtWidgets.QMessageBox.Ok)
+            return False
         else:
             pts_src = np.array([[self.px_u1_value, self.px_v1_value, 1.0],
                                 [self.px_u2_value, self.px_v2_value, 1.0],
@@ -608,16 +610,125 @@ class QmyMainWindow(QMainWindow):
                                 [self.cm_x8_value, self.cm_y8_value, 1.0]])
 
             self.matrix, status = cv2.findHomography(pts_src, pts_dst, method=cv2.RANSAC, ransacReprojThreshold=1)
-            print("转换矩阵", self.matrix)
+            # print("转换矩阵", self.matrix)
             if self.matrix is not None:
                 QtWidgets.QMessageBox.information(self, '校准', "校准成功", buttons=QtWidgets.QMessageBox.Ok)
-                self.log.info("Coordinate of pixels:\n %s" % pts_src)
-                self.log.info("Actual coordinates:\n %s" % pts_dst)
-                self.log.info("Matrix of transformation:\n %s" % self.matrix)
-                self.log.info("position: Parameter calibration succeeded!")
+                self.sta_position = True
+                return True
             else:
-                self.log.error("position: Failure of calibration")
                 QtWidgets.QMessageBox.warning(self, '警告', "输入坐标参数有误或不完整，请重新输入", buttons=QtWidgets.QMessageBox.Ok)
+                return False
+
+    def calculate_position_result_save(self):
+        # position config
+        # 左上角坐标
+        px_u1_value = self.ui.left_up_px_u.value()
+        self.px_u1_value = round(px_u1_value, 2)
+        px_v1_value = self.ui.left_up_px_v.value()
+        self.px_v1_value = round(px_v1_value, 2)
+        cm_x1_value = self.ui.left_up_cm_x.value()
+        self.cm_x1_value = round(cm_x1_value, 2)
+        cm_y1_value = self.ui.left_up_cm_y.value()
+        self.cm_y1_value = round(cm_y1_value, 2)
+        # 左中角坐标
+        px_u2_value = self.ui.left_mid_px_u.value()
+        self.px_u2_value = round(px_u2_value, 2)
+        px_v2_value = self.ui.left_mid_px_v.value()
+        self.px_v2_value = round(px_v2_value, 2)
+        cm_x2_value = self.ui.left_mid_cm_x.value()
+        self.cm_x2_value = round(cm_x2_value, 2)
+        cm_y2_value = self.ui.left_mid_cm_y.value()
+        self.cm_y2_value = round(cm_y2_value, 2)
+        # 左下角坐标
+        px_u3_value = self.ui.left_down_px_u.value()
+        self.px_u3_value = round(px_u3_value, 2)
+        px_v3_value = self.ui.left_down_px_v.value()
+        self.px_v3_value = round(px_v3_value, 2)
+        cm_x3_value = self.ui.left_down_cm_x.value()
+        self.cm_x3_value = round(cm_x3_value, 2)
+        cm_y3_value = self.ui.left_down_cm_y.value()
+        self.cm_y3_value = round(cm_y3_value, 2)
+        # 下中角坐标
+        px_u4_value = self.ui.bottom_mid_px_u.value()
+        self.px_u4_value = round(px_u4_value, 2)
+        px_v4_value = self.ui.bottom_mid_px_v.value()
+        self.px_v4_value = round(px_v4_value, 2)
+        cm_x4_value = self.ui.bottom_mid_cm_x.value()
+        self.cm_x4_value = round(cm_x4_value, 2)
+        cm_y4_value = self.ui.bottom_mid_cm_y.value()
+        self.cm_y4_value = round(cm_y4_value, 2)
+        # 右下角坐标
+        px_u5_value = self.ui.right_down_px_u.value()
+        self.px_u5_value = round(px_u5_value, 2)
+        px_v5_value = self.ui.right_down_px_v.value()
+        self.px_v5_value = round(px_v5_value, 2)
+        cm_x5_value = self.ui.right_down_cm_x.value()
+        self.cm_x5_value = round(cm_x5_value, 2)
+        cm_y5_value = self.ui.right_down_cm_y.value()
+        self.cm_y5_value = round(cm_y5_value, 2)
+        # 右中角坐标
+        px_u6_value = self.ui.right_mid_px_u.value()
+        self.px_u6_value = round(px_u6_value, 2)
+        px_v6_value = self.ui.right_mid_px_v.value()
+        self.px_v6_value = round(px_v6_value, 2)
+        cm_x6_value = self.ui.right_mid_cm_x.value()
+        self.cm_x6_value = round(cm_x6_value, 2)
+        cm_y6_value = self.ui.right_mid_cm_y.value()
+        self.cm_y6_value = round(cm_y6_value, 2)
+        # 右上角坐标
+        px_u7_value = self.ui.right_up_px_u.value()
+        self.px_u7_value = round(px_u7_value, 2)
+        px_v7_value = self.ui.right_up_px_v.value()
+        self.px_v7_value = round(px_v7_value, 2)
+        cm_x7_value = self.ui.right_up_cm_x.value()
+        self.cm_x7_value = round(cm_x7_value, 2)
+        cm_y7_value = self.ui.right_up_cm_y.value()
+        self.cm_y7_value = round(cm_y7_value, 2)
+        # 上中角坐标
+        px_u8_value = self.ui.top_mid_px_u.value()
+        self.px_u8_value = round(px_u8_value, 2)
+        px_v8_value = self.ui.top_mid_px_v.value()
+        self.px_v8_value = round(px_v8_value, 2)
+        cm_x8_value = self.ui.top_mid_cm_x.value()
+        self.cm_x8_value = round(cm_x8_value, 2)
+        cm_y8_value = self.ui.top_mid_cm_y.value()
+        self.cm_y8_value = round(cm_y8_value, 2)
+
+        if ((self.px_u1_value == 0 and self.px_v1_value == 0 and self.cm_x1_value == 0 and self.cm_y1_value == 0) or
+                (self.px_u2_value == 0 and self.px_v2_value == 0 and self.cm_x2_value == 0 and self.cm_y2_value == 0) or
+                (self.px_u3_value == 0 and self.px_v3_value == 0 and self.cm_x3_value == 0 and self.cm_y3_value == 0) or
+                (self.px_u4_value == 0 and self.px_v4_value == 0 and self.cm_x4_value == 0 and self.cm_y4_value == 0) or
+                (self.px_u5_value == 0 and self.px_v5_value == 0 and self.cm_x5_value == 0 and self.cm_y5_value == 0) or
+                (self.px_u6_value == 0 and self.px_v6_value == 0 and self.cm_x6_value == 0 and self.cm_y6_value == 0) or
+                (self.px_u7_value == 0 and self.px_v7_value == 0 and self.cm_x7_value == 0 and self.cm_y7_value == 0) or
+                (self.px_u8_value == 0 and self.px_v8_value == 0 and self.cm_x8_value == 0 and self.cm_y8_value == 0)):
+            QtWidgets.QMessageBox.warning(self, '警告', "输入坐标参数有误，请重新输入", buttons=QtWidgets.QMessageBox.Ok)
+            return False
+        else:
+            pts_src = np.array([[self.px_u1_value, self.px_v1_value, 1.0],
+                                [self.px_u2_value, self.px_v2_value, 1.0],
+                                [self.px_u3_value, self.px_v3_value, 1.0],
+                                [self.px_u4_value, self.px_v4_value, 1.0],
+                                [self.px_u5_value, self.px_v5_value, 1.0],
+                                [self.px_u6_value, self.px_v6_value, 1.0],
+                                [self.px_u7_value, self.px_v7_value, 1.0],
+                                [self.px_u8_value, self.px_v8_value, 1.0]
+                                ])
+            pts_dst = np.array([[self.cm_x1_value, self.cm_y1_value, 1.0],
+                                [self.cm_x2_value, self.cm_y2_value, 1.0],
+                                [self.cm_x3_value, self.cm_y3_value, 1.0],
+                                [self.cm_x4_value, self.cm_y4_value, 1.0],
+                                [self.cm_x5_value, self.cm_y5_value, 1.0],
+                                [self.cm_x6_value, self.cm_y6_value, 1.0],
+                                [self.cm_x7_value, self.cm_y7_value, 1.0],
+                                [self.cm_x8_value, self.cm_y8_value, 1.0]])
+
+            self.matrix, status = cv2.findHomography(pts_src, pts_dst, method=cv2.RANSAC, ransacReprojThreshold=1)
+            if self.matrix is not None:
+                return True
+            else:
+                QtWidgets.QMessageBox.warning(self, '警告', "输入坐标参数有误或不完整，请重新输入", buttons=QtWidgets.QMessageBox.Ok)
+                return False
 
     def button_status(self):
         # 设置默认选中计算距离模式
@@ -657,7 +768,7 @@ class QmyMainWindow(QMainWindow):
             angle_value = self.ui.camera_angle.value()
             if height_value == 0 or angle_value == 0:
                 QtWidgets.QMessageBox.warning(self, '警告', "请输入正确的参数", buttons=QtWidgets.QMessageBox.Ok)
-                self.log.warning("calculate distance:input data incorrect")
+                # self.log.warning("calculate distance:input data incorrect")
             else:
                 # 设置距离计算框不可编辑
                 self.ui.camera_farthest.setEnabled(False)
@@ -672,7 +783,7 @@ class QmyMainWindow(QMainWindow):
             farthest_value = self.ui.camera_farthest.value()
             if height_value == 0 or farthest_value == 0:
                 QtWidgets.QMessageBox.warning(self, '警告', "请输入正确的参数", buttons=QtWidgets.QMessageBox.Ok)
-                self.log.warning("camera angle:input data incorrect")
+                # self.log.warning("camera angle:input data incorrect")
             else:
                 QmyMainWindow.cal_angle(self, height_value, farthest_value)
 
@@ -682,13 +793,12 @@ class QmyMainWindow(QMainWindow):
         # 计算距离
         farthest = height_value * math.tan(radians_value)
         # 保留2位小数
-        final_farthest = round(farthest, 2)
-        self.log.info("Calculate the furthest distance measured by the camera.")
-        self.log.info("height: %s cm" % height_value)
-        self.log.info("angle: %s °" % angle_value)
-        self.log.info("distance: %s cm" % final_farthest)
+        self.final_farthest_d = round(farthest, 2)
         # 显示到UI界面
-        self.ui.camera_farthest.setValue(final_farthest)
+        self.ui.camera_farthest.setValue(self.final_farthest_d)
+        self.angle_value_d = angle_value
+        self.height_value_d = height_value
+        self.sta_distance = True
 
     def cal_angle(self, height_value, farthest_value):
         # 求解角度的反三角函数
@@ -696,16 +806,16 @@ class QmyMainWindow(QMainWindow):
         # 求解度数
         final_angle = math.degrees(angle_value)
         # 保留2位小数
-        final_angle = round(final_angle, 2)
-        self.log.info("Calculate camera mounting Angle.")
-        self.log.info("height: %s cm" % height_value)
-        self.log.info("distance: %s cm" % farthest_value)
-        self.log.info("angle: %s °" % final_angle)
-        self.ui.camera_angle.setValue(final_angle)
+        self.final_angle_a = round(final_angle, 2)
+        self.ui.camera_angle.setValue(self.final_angle_a)
+        self.farthest_value_a = farthest_value
+        self.height_value_a = height_value
+        self.sta_angle = True
 
 
 if __name__ == '__main__':
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+
     app = QtWidgets.QApplication(sys.argv)  # 固定的，表示程序应用
     ui = QmyMainWindow()  # 实例化Ui_MainWindow
     ui.show()  # 调用ui的show()以显示。同样show()是源于父类QtWidgets.QWidget的
